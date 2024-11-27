@@ -3,7 +3,7 @@ import { conmysql } from "../db.js";
 // Obtener todos los eventos
 export const getEventos = async (req, res) => {
   try {
-    const [rows] = await conmysql.query('SELECT * FROM eventos');
+    const [rows] = await conmysql.query('SELECT * FROM Eventos');
     res.status(200).json(rows);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los eventos', error });
@@ -14,7 +14,7 @@ export const getEventos = async (req, res) => {
 export const getEventoxid = async (req, res) => {
   const {id} = req.params;
   try {
-    const [rows] = await conmysql.query('SELECT * FROM eventos WHERE id_evento = ?', [id]);
+    const [rows] = await conmysql.query('SELECT * FROM Eventos WHERE id_evento = ?', [id]);
     if (rows.length === 0) {
       return res.status(404).json({ 
         id_evento: 0,
@@ -34,7 +34,7 @@ export const postEvento = async (req, res) => {
   }
   try {
     const [result] = await conmysql.query(
-      'INSERT INTO eventos (id_usuario, id_cliente, nombre_evento, descripcion, fecha) VALUES (?, ?, ?, ?, ?)',
+      'INSERT INTO Eventos (id_usuario, id_cliente, nombre_evento, descripcion, fecha) VALUES (?, ?, ?, ?, ?)',
       [id_usuario, id_cliente, nombre_evento, descripcion, fecha]
     );
     res.status(201).json({ message: 'Evento creado', id_evento: result.insertId });
@@ -48,7 +48,7 @@ export const putEvento = async (req, res) => {
 
   try {
     const [result] = await conmysql.query(
-      'UPDATE eventos SET id_usuario = ?, id_cliente = ?, nombre_evento = ?, descripcion = ?, fecha = ? WHERE id_evento = ?',
+      'UPDATE Eventos SET id_usuario = ?, id_cliente = ?, nombre_evento = ?, descripcion = ?, fecha = ? WHERE id_evento = ?',
       [id_usuario, id_cliente, nombre_evento, descripcion, fecha, id]
     );
 
@@ -68,7 +68,7 @@ export const patchEvento = async (req, res) => {
   const updates = req.body;
 
   try {
-    const [result] = await conmysql.query('UPDATE eventos SET ? WHERE id_evento = ?', [updates, id]);
+    const [result] = await conmysql.query('UPDATE Eventos SET ? WHERE id_evento = ?', [updates, id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Evento no encontrado' });
@@ -85,7 +85,7 @@ export const deleteEvento = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const [result] = await conmysql.query('DELETE FROM eventos WHERE id_evento = ?', [id]);
+    const [result] = await conmysql.query('DELETE FROM Eventos WHERE id_evento = ?', [id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Evento no encontrado' });
