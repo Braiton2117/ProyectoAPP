@@ -15,11 +15,11 @@ const storage=multer.diskStorage({
 
 const upload=multer({storage});
 
-router.get('/inventario',verifyToken,getInventarios)//select 
-router.get('/inventario/:id',verifyToken, getInventarioxid)//select con id
-router.post('/inventario',verifyToken, upload.single('imagen'),postInventario)//insert
-router.put('/inventario/:id',verifyToken, upload.single('image'),putInventario) //update
-router.patch('/inventario/:id',verifyToken,upload.single('image'),patchInventario)  //update
-router.delete('/inventario/:id',verifyToken, deleteInventario)
+router.get('/inventario',getInventarios)//select 
+router.get('/inventario/:id', getInventarioxid)//select con id
+router.post('/inventario', upload.single('imagen'),postInventario)//insert
+router.put('/inventario/:id', upload.single('image'),putInventario) //update
+router.patch('/inventario/:id',upload.single('image'),patchInventario)  //update
+router.delete('/inventario/:id', deleteInventario)
 
 export default router
