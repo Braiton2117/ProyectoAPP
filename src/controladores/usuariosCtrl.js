@@ -124,30 +124,31 @@ export const patchUsuario =
     export const login = async (req, res) => {
         const { usuario } = req.body;
     
-        if (!usuario) {
-            return res.status(400).json({ message: 'Por favor ingrese un usuario' });
+        if (!usuario || typeof usuario !== 'string') {
+            return res.status(400).json({ message: 'El campo usuario es obligatorio y debe ser un texto válido.' });
         }
     
         try {
-            // Buscar el usuario en la base de datos
-            const [user] = await conmysql.query('SELECT * FROM Usuarios WHERE usuario = ?', [usuario]);
+            const [rows] = await conmysql.query('SELECT * FROM Usuarios WHERE usuario = ?', [usuario]);
     
-            if (!user.length) {
+            if (rows.length === 0) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
     
-            // Generar un token JWT solo con el usuario (sin necesidad de verificar la contraseña)
-            const token = jwt.sign({ id: user[0].id_usuario, usuario: user[0].usuario }, JWT_SECRET, { expiresIn: '1h' });
+            const user = rows[0];
+            const token = jwt.sign({ id: user.id_usuario, usuario: user.usuario }, JWT_SECRET, { expiresIn: '1h' });
     
-            // Devolver el token en la respuesta
-            res.json({
-                auth: true,
-                token,
-                id_usuario: user[0].id_usuario,
-                usuario: user[0].usuario
+            res.status(200).json({
+                success: true,
+                data: {
+                    auth: true,
+                    token,
+                    id_usuario: user.id_usuario,
+                    usuario: user.usuario,
+                },
             });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Error en el servidor' });
+            console.error('Error al procesar la solicitud:', error);
+            return res.status(500).json({ message: 'Ocurrió un error en el servidor al buscar el usuario.' });
         }
     };
